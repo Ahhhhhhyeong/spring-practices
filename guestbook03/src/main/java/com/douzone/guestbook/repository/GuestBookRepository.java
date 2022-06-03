@@ -1,4 +1,4 @@
-package com.douzone.emaillist.repository;
+package com.douzone.guestbook.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,16 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import com.douzone.guestbook.vo.GuestBookVo;
 
-import com.douzone.emaillist.vo.EmaillistVo;
-
-
-@Repository
-public class EmaillistRepository {
-	
-	public static List<EmaillistVo> findAll() {
-		List<EmaillistVo> result = new ArrayList<>();
+public class GuestBookRepository {
+	public static List<GuestBookVo> findAll() {
+		List<GuestBookVo> result = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -25,29 +20,26 @@ public class EmaillistRepository {
 		try {
 			connection = getConnection();
 			
-			//3. SQL 준비
 			String sql =
-				"  SELECT "
-				+ "    no, first_name, last_name, email "
-				+ "FROM emaillist "
-				+ "ORDER BY no DESC";
+				" SELECT  "
+				+ "    @ROWNUM := @ROWNUM + 1 AS ROWNUM, "
+				+ "    a.name, a.password, a.message, date_format(a.regdate, '%Y-%m-%d') as regdate, a.no "
+				+ "FROM (SELECT * FROM guestbook g order by g.no desc) a, "
+				+ "(SELECT @ROWNUM :=0) as b";
 			pstmt = connection.prepareStatement(sql);
 			
-			//5. SQL 실행
 			rs = pstmt.executeQuery();
 			
 			//6. 결과처리
-			while(rs.next()) {
-				Long no = rs.getLong(1);
-				String name = rs.getString(2);
-				String lastName = rs.getString(3);
-				String email = rs.getString(4);
+			while(rs.next()) {				
+				GuestBookVo vo = new GuestBookVo();
+				vo.setRowNum(rs.getLong(1));
+				vo.setName(rs.getString(2));
+				vo.setPassword(rs.getString(3));
+				vo.setMessage(rs.getString(4));
+				vo.setRegdate(rs.getString(5));
+				vo.setNo(rs.getLong(6));
 				
-				EmaillistVo vo = new EmaillistVo();
-				vo.setNo(no);
-				vo.setFirst_name(name);
-				vo.setLast_name(lastName);
-				vo.setEmail(email);
 				
 				result.add(vo);
 			}
@@ -72,7 +64,7 @@ public class EmaillistRepository {
 		return result;		
 	}
 	
-	public static boolean insert(EmaillistVo vo) {
+	public static boolean insert(GuestBookVo vo) {
 		boolean result = false;
 		Connection connection = null;
 		PreparedStatement pstmt = null;
@@ -80,13 +72,13 @@ public class EmaillistRepository {
 		try {
 			connection = getConnection();
 				
-			String sql = " insert "
-					+ " into emaillist "
-					+ " value (null, ?, ?, ?) ";
+			String sql = " INSERT INTO guestbook "
+					+ " VALUES "
+					+ " (null, ? , ?, ?, DATE_FORMAT(CURDATE(), '%Y-%m-%d')) ";
 			pstmt = connection.prepareStatement(sql);			
-			pstmt.setString(1,vo.getFirst_name());
-			pstmt.setString(2,vo.getLast_name());
-			pstmt.setString(3,vo.getEmail());
+			pstmt.setString(1,vo.getName());
+			pstmt.setString(2,vo.getPassword());
+			pstmt.setString(3,vo.getMessage());
 			
 					
 			int count = pstmt.executeUpdate();
@@ -108,6 +100,37 @@ public class EmaillistRepository {
 		return result;
 	}
 	
+	public int delete(long value, String password) {
+		
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		int count = 0;	
+		try {
+			connection = getConnection();
+				
+			String sql = " delete from guestbook where no = ? and password = ?";
+			pstmt = connection.prepareStatement(sql);			
+			pstmt.setLong(1, value);
+			pstmt.setString(2, password);			
+					
+			count = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
+	}	
+	
 	private static Connection getConnection() throws SQLException{
 		Connection connection = null;
 		try {
@@ -123,4 +146,5 @@ public class EmaillistRepository {
 	}
 
 	
+
 }
