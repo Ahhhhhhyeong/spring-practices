@@ -10,7 +10,7 @@
 <form method="post" action="${pageContext.request.contextPath }/upload" enctype="multipart/form-data">
 
 	<label>email:</label>
-	<input type="text" name="email" value="kickscar@gmail.com">
+	<input type="text" name="email" value="아놔집갈래@gmail.com">
 	<br><br>
 	
 	<label>파일:</label>

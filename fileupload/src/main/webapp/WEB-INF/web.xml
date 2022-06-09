@@ -5,31 +5,30 @@
 	version="2.5">
 	<display-name>fileupload</display-name>
 	
-	<!-- listner -->
 	<context-param>
-		<param-name> contextConfigLocation </param-name>
+		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:applicationContext.xml</param-value>
 	</context-param>
-	
+
 	<!-- Context Load Listener -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
-	<!-- Dispatcher Servlet -->
-	<servlet>		​
-		<servlet-name>dispatcher</servlet-name>		​
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
+
+	<!-- Dispatcher Servlet-->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring-servlet.xml</param-value>
-		</init-param>	​
+		</init-param>
 	</servlet>
-	<servlet-mapping>		​
-		<servlet-name>dispatcher</servlet-name>		​
-		<url-pattern>/</url-pattern>		​
-	</servlet-mapping>	
-	
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+		
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
