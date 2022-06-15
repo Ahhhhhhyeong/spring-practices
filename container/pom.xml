@@ -21,6 +21,30 @@
           <artifactId>spring-context</artifactId>
           <version>${org.springframework-version}</version>
       </dependency>
+      
+      <!-- Spring test -->
+      <dependency>
+      	<groupId>org.springframework</groupId>
+      	<artifactId>spring-test</artifactId>
+        <version>${org.springframework-version}</version>
+      	<scope>test</scope>
+      </dependency>
+      
+      <!-- jUnit5(jupiter) -->
+      <dependency>
+      	<groupId>org.junit.jupiter</groupId>
+      	<artifactId>junit-jupiter-api</artifactId>
+        <version>5.8.2</version>
+      	<scope>test</scope>
+      </dependency>
+      
+      <!-- System Rules -->
+      <dependency>
+		  <groupId>com.github.stefanbirkner</groupId>
+		  <artifactId>system-rules</artifactId>
+		  <version>1.19.0</version>
+	      <scope>test</scope>
+      </dependency>
          
    </dependencies>
    <build>
